@@ -8,8 +8,6 @@ function onOpen(): void {
 }
 
 function main(): void {
-  // SpreadsheetApp.getUi()
-  //     .alert('Not yet implemented');
   const sheet = SpreadsheetApp.getActive().getActiveSheet();
   const calName: string = SpreadsheetApp.getActiveSheet().getName();
   
@@ -17,13 +15,22 @@ function main(): void {
     // Calendar named same as sheet page doesn't exist. Make it
     CalendarApp.createCalendar(calName);
   }
-  const cal = CalendarApp.getCalendarsByName(calName)[0];
+  let cal = CalendarApp.getCalendarsByName(calName)[0];
   
-  let rowN: number = findDataHeight(sheet)
+  let rowN: number = findDataHeight(sheet);
+  cal = clearCalendar(cal, sheet.getRange(1,3).getValue(), sheet.getRange(rowN, 3).getValue())
   for (let rowI = 1; rowI <= rowN; rowI++) {
     // For each row. rowI goes from 1 .. last row (inclusive inclusive)
     createEvent(sheet.getRange(rowI, 1, rowI, 8), cal);
   }
+}
+
+function clearCalendar(cal: GoogleAppsScript.Calendar.Calendar, starting: Date, ending: Date): GoogleAppsScript.Calendar.Calendar {
+  let allEvents = cal.getEvents(starting, ending);
+  allEvents.forEach(event => {
+    event.deleteEvent();
+  });
+  return cal;
 }
 
 function createEvent(row: GoogleAppsScript.Spreadsheet.Range, cal: GoogleAppsScript.Calendar.Calendar): GoogleAppsScript.Calendar.CalendarEvent {
@@ -49,6 +56,9 @@ function createEvent(row: GoogleAppsScript.Spreadsheet.Range, cal: GoogleAppsScr
     endDate.setMinutes(Number(defaultTime.end.substring(3, 5)))
   } else {
     // Create as all day event
+    if (startDate.getDate() === endDate.getDate()) {
+      return cal.createAllDayEvent(title, startDate, optionals)
+    }
     return cal.createAllDayEvent(title, startDate, endDate, optionals)
   }
   // Create as normal event
@@ -63,5 +73,5 @@ function findDataHeight(sheet: GoogleAppsScript.Spreadsheet.Sheet): number {
 
     i++;
   } while (cellText !== '')
-  return i - 1;
+  return i - 2;
 }
