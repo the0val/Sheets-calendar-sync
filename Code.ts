@@ -1,4 +1,4 @@
-const defaultTime = {start: '18:30', end:'20:30'}
+const defaultTime = {start: '18:30', end:'20:30'};
 
 function onOpen(): void {
   SpreadsheetApp.getUi()
@@ -18,7 +18,7 @@ function main(): void {
   let cal = CalendarApp.getCalendarsByName(calName)[0];
   
   let rowN: number = findDataHeight(sheet);
-  cal = clearCalendar(cal, sheet.getRange(1,3).getValue(), sheet.getRange(rowN, 3).getValue())
+  cal = clearCalendar(cal, sheet.getRange(1,3).getValue(), sheet.getRange(rowN, 3).getValue());
   for (let rowI = 1; rowI <= rowN; rowI++) {
     // For each row. rowI goes from 1 .. last row (inclusive inclusive)
     createEvent(sheet.getRange(rowI, 1, rowI, 8), cal);
@@ -50,24 +50,25 @@ function createEvent(row: GoogleAppsScript.Spreadsheet.Range, cal: GoogleAppsScr
     endDate.setMinutes(row.getCell(1,5).getValue().getMinutes());
   } else if (row.getBackground() === '#ffffff' && defaultTime !== null) {
     // Backround white, use default time
-    startDate.setHours(Number(defaultTime.start.substring(0, 2)))
-    startDate.setMinutes(Number(defaultTime.start.substring(3, 5)))
-    endDate.setHours(Number(defaultTime.end.substring(0, 2)))
-    endDate.setMinutes(Number(defaultTime.end.substring(3, 5)))
+    startDate.setHours(Number(defaultTime.start.substring(0, 2)));
+    startDate.setMinutes(Number(defaultTime.start.substring(3, 5)));
+    endDate.setHours(Number(defaultTime.end.substring(0, 2)));
+    endDate.setMinutes(Number(defaultTime.end.substring(3, 5)));
   } else {
     // Create as all day event
     if (startDate.getDate() === endDate.getDate()) {
-      return cal.createAllDayEvent(title, startDate, optionals)
+      return cal.createAllDayEvent(title, startDate, optionals);
     }
-    return cal.createAllDayEvent(title, startDate, endDate, optionals)
+    endDate.setDate(endDate.getDate() + 1);
+    return cal.createAllDayEvent(title, startDate, endDate, optionals);
   }
   // Create as normal event
-  return cal.createEvent(title, startDate, endDate, optionals)
+  return cal.createEvent(title, startDate, endDate, optionals);
 }
 
 function findDataHeight(sheet: GoogleAppsScript.Spreadsheet.Sheet): number {
-  let i: number = 1
-  let cellText: string
+  let i: number = 1;
+  let cellText: string;
   do {
     cellText = sheet.getRange(i, 3).getValue();
 
