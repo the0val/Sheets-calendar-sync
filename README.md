@@ -9,6 +9,9 @@ Heres the expected strucure of the sheet
 Starting date* | -** | EndingDate | StartingTime* | EndingTime* | Title | Place* | Comments*
 ---------------|-----|------------|---------------|-------------|-------|--------|-----------
 
+*Optional<br>**Ignored by the programm
+
+
 If no startingdate is defined program assumes all day event; unless the background color is white and `defaultTime != null`, in which case the time is default time.
 
 Default values can be changed in the top of the program.
