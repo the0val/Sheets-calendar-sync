@@ -59,6 +59,7 @@ function createEvent(row: GoogleAppsScript.Spreadsheet.Range, cal: GoogleAppsScr
     if (startDate.getDate() === endDate.getDate()) {
       return cal.createAllDayEvent(title, startDate, optionals);
     }
+    endDate.setDate(endDate.getDate() + 1);
     return cal.createAllDayEvent(title, startDate, endDate, optionals);
   }
   // Create as normal event
